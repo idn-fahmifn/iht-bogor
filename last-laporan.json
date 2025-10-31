@@ -263,6 +263,28 @@
                 },
                 "conditions": [
                   {
+                    "id": "ebd0acfd-1cd3-45e6-9120-2ac3f36731d6",
+                    "leftValue": "={{ $json.message.text }}",
+                    "rightValue": "/laporan",
+                    "operator": {
+                      "type": "string",
+                      "operation": "startsWith"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
                     "id": "fd0569ff-dafd-4b8e-bd47-66411ec63609",
                     "leftValue": "={{ $json.message.text }}",
                     "rightValue": "",
@@ -301,8 +323,8 @@
       "type": "n8n-nodes-base.telegramTrigger",
       "typeVersion": 1.2,
       "position": [
-        -816,
-        336
+        -848,
+        272
       ],
       "id": "c4a0d83c-8627-41a1-ad86-3781938faca2",
       "name": "Telegram Trigger1",
@@ -572,6 +594,8 @@
     },
     {
       "parameters": {
+        "chatId": "={{ $('Telegram Trigger1').item.json.message.chat.id }}",
+        "text": "=🤩 Yeayyy, Data berhasil dibuat. Ini data yang kamu inputkan :\nNama Toko : {{ $json.TOKO }}\nNama Barang : {{ $json.ITEMS }}\n",
         "additionalFields": {}
       },
       "type": "n8n-nodes-base.telegram",
@@ -588,8 +612,111 @@
           "id": "Am554JJeP3qwKw8j",
           "name": "Bundahara Bot"
         }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## Meminta data laporan \n**Akan mengambil data dari google sheet untuk ditampilkan di telegram",
+        "height": 496,
+        "width": 1248
       },
-      "disabled": true
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -432,
+        912
+      ],
+      "typeVersion": 1,
+      "id": "9a2f305f-00aa-406d-8bd2-404d9b1c2a2e",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Tugas kamu adalah\nPENTING : Ambil data dari Google sheet yang ada pada tools (Materi 1) dan sheet nya adalah catatan belanja.\n\nKamu adalah asisten saya\nTugas : \n1. Analisa permintaan dari prompt tentang pengeluaran\n2. Filter data dari : \n    - hari ini -> sesuaikan dengan {{ $now }}\n    - kemarin -> sesuaikan dengan {{ $now }}\n    - minggu lalu -> sesuaikan dengan {{ $now }}\n3. Hitung jumlah pengeluarannya\n4. Format laporan menggunakan bahasa indonesia\n\nSTRUKTUR DATA\n- KOLOM A : Toko\n- KOLOM B : Total dalam rupiah\n- KOLOM C : Items\n- KOLOM D : Tanggal Input\n- KOLOM E : Waktu Input\n\nBuatkan datanya dengan sangat rapih, tambahkan emoji yang sesuai dengan kolom.\n\nPENTING : \n- Urutkan berdasarkan data terbaru\n- Gunakan format penulisan rupiah (Rp. 17.000)\n- Pisahkan data item dengan \"----------------\"\n- Emojinya sesuaikan berdasarkan data item diatas\n\nJika tidak ada transaksi pada tanggal tersebut, keluarkan output tidak ada transaksi pada tanggal tersebut dengan ramah.",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        -288,
+        1040
+      ],
+      "id": "e1b81bee-20ed-4483-a474-fad7f5166e2d",
+      "name": "AI Agent1"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -384,
+        1248
+      ],
+      "id": "98227286-7f88-4b1a-aa28-16291fc10546",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "GXB9Oy0YDaTGpXpo",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1LwrsYqMg7BagvTA4d3QURCVcrR2VQmRt-QsTi5LVRqc",
+          "mode": "list",
+          "cachedResultName": "Materi 1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1LwrsYqMg7BagvTA4d3QURCVcrR2VQmRt-QsTi5LVRqc/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1128735360,
+          "mode": "list",
+          "cachedResultName": "Catatan Belanja",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1LwrsYqMg7BagvTA4d3QURCVcrR2VQmRt-QsTi5LVRqc/edit#gid=1128735360"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.7,
+      "position": [
+        -144,
+        1248
+      ],
+      "id": "33ce81b9-9981-4aec-b4fe-430571106329",
+      "name": "Get row(s) in sheet in Google Sheets",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "NQDqcN4IXTYOhWEw",
+          "name": "Pertemuan 1"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger1').item.json.message.chat.id }}",
+        "text": "={{ $json.output }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        64,
+        1040
+      ],
+      "id": "2b5859e8-23d7-414c-b33b-073b16662180",
+      "name": "Send a text message4",
+      "webhookId": "823b7345-053f-461a-a0c9-d1842164003f",
+      "credentials": {
+        "telegramApi": {
+          "id": "Am554JJeP3qwKw8j",
+          "name": "Bundahara Bot"
+        }
+      }
     }
   ],
   "connections": {
@@ -649,6 +776,13 @@
         [
           {
             "node": "Get a file",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "AI Agent1",
             "type": "main",
             "index": 0
           }
@@ -719,6 +853,39 @@
           {
             "node": "Send a text message3",
             "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent1": {
+      "main": [
+        [
+          {
+            "node": "Send a text message4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet in Google Sheets": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_tool",
             "index": 0
           }
         ]
