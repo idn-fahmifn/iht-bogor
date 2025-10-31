@@ -1,0 +1,193 @@
+{
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 8
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "4dea82e6-ce88-4423-828f-01aa69174356",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1LwrsYqMg7BagvTA4d3QURCVcrR2VQmRt-QsTi5LVRqc",
+          "mode": "list",
+          "cachedResultName": "Materi 1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1LwrsYqMg7BagvTA4d3QURCVcrR2VQmRt-QsTi5LVRqc/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 81926472,
+          "mode": "list",
+          "cachedResultName": "dari data",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1LwrsYqMg7BagvTA4d3QURCVcrR2VQmRt-QsTi5LVRqc/edit#gid=81926472"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        208,
+        0
+      ],
+      "id": "2aa0850e-cb21-4843-98ec-c6255ddd6ca5",
+      "name": "Get row(s) in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "NQDqcN4IXTYOhWEw",
+          "name": "Pertemuan 1"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        416,
+        0
+      ],
+      "id": "14c05567-93f1-4bbb-b712-5fa2b00886a5",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "chatId": "6428819906",
+        "text": "=Hallo kegiatan hari ini adalah : \n\nNama : {{ $json.Nama }}\nKegiatan : {{ $json.Kegiatan }}\ndari divisi : {{ $json.Divisi }}\n",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        880,
+        -160
+      ],
+      "id": "a8b1613f-b59e-4d55-ad21-195b44b29843",
+      "name": "Send a text message",
+      "webhookId": "6c81ee92-0044-4a58-9ffc-aa0d07be3ae6",
+      "credentials": {
+        "telegramApi": {
+          "id": "yVyjTi6MrMYY9MAR",
+          "name": "Nyobain"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "d5dcc913-f803-4144-857d-64c5b7dc2993",
+              "leftValue": "={{ $json.Tanggal }}",
+              "rightValue": "={{ $now.format('MM/dd/yyyy') }}",
+              "operator": {
+                "type": "dateTime",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        624,
+        0
+      ],
+      "id": "e9d85fe2-6f67-470a-8039-06cec17fecb5",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "content": "## Reminder from spreadsheet \n",
+        "height": 448,
+        "width": 1136
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -64,
+        -224
+      ],
+      "typeVersion": 1,
+      "id": "66eef345-4692-4058-8e44-2489df500ca0",
+      "name": "Sticky Note"
+    }
+  ],
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    }
+  },
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "75fa6c51205b80e6e946e2f3cd69b3bb6efd37b7a2786cac4d1f6446d8453eed"
+  }
+}

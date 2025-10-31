@@ -1,0 +1,79 @@
+{
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        80,
+        -80
+      ],
+      "id": "806e6d1a-5a3a-4197-a336-53720e16ed5a",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "chatId": "6428819906",
+        "text": "Halllooo Ayo Bangunnn",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        400,
+        16
+      ],
+      "id": "ae32a3cc-2136-4042-a30f-1b241cb7c8f7",
+      "name": "Send a text message",
+      "webhookId": "e80770ed-c3c8-4005-93e9-5d750104aa6e",
+      "credentials": {
+        "telegramApi": {
+          "id": "yVyjTi6MrMYY9MAR",
+          "name": "Nyobain"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "Pengingat otomatis dari scheduler ke telegram",
+        "height": 368,
+        "width": 640,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        16,
+        -144
+      ],
+      "id": "9724d7f6-5c04-4466-ae83-c0ca04a547b9",
+      "name": "Sticky Note"
+    }
+  ],
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "75fa6c51205b80e6e946e2f3cd69b3bb6efd37b7a2786cac4d1f6446d8453eed"
+  }
+}
