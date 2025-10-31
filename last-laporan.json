@@ -485,7 +485,14 @@
         },
         "columns": {
           "mappingMode": "defineBelow",
-          "value": {},
+          "value": {
+            "TOKO": "={{ $json.output.match(/TOKO :(.+)/)[1]}}",
+            "TOTAL": "={{ $json.output.match(/TOTAL :(.+)/)[1]}}",
+            "ITEMS": "={{ $json.output.match(/ITEMS :(.+)/)[1]}}",
+            "TANGGAL STRUK": "={{ $json.output.match(/TANGGAL :(.+)/)[1]}}",
+            "TANGGAL INPUT": "={{ $now.format('yyyy-MM-dd') }}",
+            "WAKTU INPUT": "={{  $now.format('HH:mm:ss') }}"
+          },
           "matchingColumns": [],
           "schema": [
             {
@@ -552,9 +559,9 @@
       "typeVersion": 4.7,
       "position": [
         416,
-        688
+        736
       ],
-      "id": "9f3b14f9-0994-4560-aa25-dbff26fbd1e3",
+      "id": "e78e49e9-2d0e-4754-ae3a-039d8aaabc3b",
       "name": "Append row in sheet1",
       "credentials": {
         "googleSheetsOAuth2Api": {
@@ -562,6 +569,27 @@
           "name": "Pertemuan 1"
         }
       }
+    },
+    {
+      "parameters": {
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        624,
+        736
+      ],
+      "id": "09b33a38-cd7b-4095-8067-45264dd501ec",
+      "name": "Send a text message3",
+      "webhookId": "2fc48830-3652-4459-889d-d8e0df53e01a",
+      "credentials": {
+        "telegramApi": {
+          "id": "Am554JJeP3qwKw8j",
+          "name": "Bundahara Bot"
+        }
+      },
+      "disabled": true
     }
   ],
   "connections": {
@@ -679,6 +707,17 @@
         [
           {
             "node": "Append row in sheet1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append row in sheet1": {
+      "main": [
+        [
+          {
+            "node": "Send a text message3",
             "type": "main",
             "index": 0
           }
