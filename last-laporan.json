@@ -408,6 +408,160 @@
           "name": "OpenAi account"
         }
       }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "347e1392-222a-486f-abb1-c94d84cb6461",
+              "leftValue": "={{ $json.output }}",
+              "rightValue": "ERROR",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        208,
+        592
+      ],
+      "id": "2373c146-3548-4cf5-b3e3-b71e724d2d3b",
+      "name": "If1"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger1').item.json.message.chat.id }}",
+        "text": "=🙁 Yahh gagal, \nInput yang kamu masukan aku kurang paham :(",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        560,
+        560
+      ],
+      "id": "77794a4f-0f26-47d5-bcf4-807c0aea8a16",
+      "name": "Send a text message2",
+      "webhookId": "fdfbf113-db54-4295-96e5-2146e23f8095",
+      "credentials": {
+        "telegramApi": {
+          "id": "Am554JJeP3qwKw8j",
+          "name": "Bundahara Bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1LwrsYqMg7BagvTA4d3QURCVcrR2VQmRt-QsTi5LVRqc",
+          "mode": "list",
+          "cachedResultName": "Materi 1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1LwrsYqMg7BagvTA4d3QURCVcrR2VQmRt-QsTi5LVRqc/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1128735360,
+          "mode": "list",
+          "cachedResultName": "Catatan Belanja",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1LwrsYqMg7BagvTA4d3QURCVcrR2VQmRt-QsTi5LVRqc/edit#gid=1128735360"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "TOKO",
+              "displayName": "TOKO",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "TOTAL",
+              "displayName": "TOTAL",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "ITEMS",
+              "displayName": "ITEMS",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "TANGGAL STRUK",
+              "displayName": "TANGGAL STRUK",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "TANGGAL INPUT",
+              "displayName": "TANGGAL INPUT",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "WAKTU INPUT",
+              "displayName": "WAKTU INPUT",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        416,
+        688
+      ],
+      "id": "9f3b14f9-0994-4560-aa25-dbff26fbd1e3",
+      "name": "Append row in sheet1",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "NQDqcN4IXTYOhWEw",
+          "name": "Pertemuan 1"
+        }
+      }
     }
   ],
   "connections": {
@@ -491,12 +645,41 @@
         ]
       ]
     },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
     "OpenAI Chat Model": {
       "ai_languageModel": [
         [
           {
             "node": "AI Agent",
             "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "Send a text message2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Append row in sheet1",
+            "type": "main",
             "index": 0
           }
         ]
