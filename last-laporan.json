@@ -2,223 +2,22 @@
   "nodes": [
     {
       "parameters": {
-        "resource": "file",
-        "fileId": "={{ $json.message.photo[3].file_id }}",
+        "updates": [
+          "message"
+        ],
         "additionalFields": {
-          "mimeType": "image/*"
+          "download": true
         }
       },
-      "type": "n8n-nodes-base.telegram",
+      "type": "n8n-nodes-base.telegramTrigger",
       "typeVersion": 1.2,
       "position": [
-        -384,
-        208
+        -1456,
+        368
       ],
-      "id": "14c6b0b8-91fc-48d8-a7c4-dfdc4d209261",
-      "name": "Get a file",
-      "webhookId": "5e18f2f6-19d2-4515-939b-2191b323541c",
-      "credentials": {
-        "telegramApi": {
-          "id": "Am554JJeP3qwKw8j",
-          "name": "Bundahara Bot"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "resource": "image",
-        "operation": "analyze",
-        "modelId": {
-          "__rl": true,
-          "mode": "list",
-          "value": "gpt-4o-mini",
-          "cachedResultName": "GPT-4O-MINI"
-        },
-        "text": "=Analisa struk belanja pada gambar ini dan berikan informasi dalam format yang PERSIS seperti ini:\\n\n\\nTOKO: [nama toko dari struk]\n\\nTOTAL: [total pembayaran dalam angka saja tanpa Rp]\n\\nITEMS: [daftar barang yang dibeli, pisahkan dengan koma]\n\\nTANGGAL: [tanggal transaksi jika terlihat, atau tidak terlihat]\n\\n\n\\nContoh response yang benar:\\nTOKO: Alfamart\\nTOTAL: 25500\\nITEMS: Susu Ultra 1L, Roti Tawar, Sabun Lifebuoy\\nTANGGAL: 2025-06-19\\n\\nJika struk tidak jelas atau tidak bisa dibaca, berikan:\\nERROR: Struk tidak dapat dibaca dengan jelas\\n\\nPENTING: Hanya berikan response dalam format di atas!",
-        "inputType": "base64",
-        "options": {
-          "detail": "auto"
-        }
-      },
-      "id": "147df333-8905-4cb6-af9d-0e22f44f2def",
-      "name": "Analyze Image1",
-      "type": "@n8n/n8n-nodes-langchain.openAi",
-      "position": [
-        -112,
-        208
-      ],
-      "typeVersion": 1.8,
-      "credentials": {
-        "openAiApi": {
-          "id": "1IXySknTEzNKrFKx",
-          "name": "OpenAi account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "conditions": {
-          "options": {
-            "caseSensitive": true,
-            "leftValue": "",
-            "typeValidation": "strict",
-            "version": 2
-          },
-          "conditions": [
-            {
-              "id": "bb42f039-d91f-462b-a07b-62598ae2f77d",
-              "leftValue": "={{ $json.content }}",
-              "rightValue": "ERROR:",
-              "operator": {
-                "type": "string",
-                "operation": "contains"
-              }
-            },
-            {
-              "id": "83274515-8119-43ca-a824-90546eece788",
-              "leftValue": "ERROR:",
-              "rightValue": "",
-              "operator": {
-                "type": "string",
-                "operation": "exists",
-                "singleValue": true
-              }
-            }
-          ],
-          "combinator": "and"
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.if",
-      "typeVersion": 2.2,
-      "position": [
-        128,
-        208
-      ],
-      "id": "b6c3e807-91dc-45c4-b323-6f2152762e6e",
-      "name": "If"
-    },
-    {
-      "parameters": {
-        "operation": "append",
-        "documentId": {
-          "__rl": true,
-          "value": "1LwrsYqMg7BagvTA4d3QURCVcrR2VQmRt-QsTi5LVRqc",
-          "mode": "list",
-          "cachedResultName": "Materi 1",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1LwrsYqMg7BagvTA4d3QURCVcrR2VQmRt-QsTi5LVRqc/edit?usp=drivesdk"
-        },
-        "sheetName": {
-          "__rl": true,
-          "value": 1128735360,
-          "mode": "list",
-          "cachedResultName": "Catatan Belanja",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1LwrsYqMg7BagvTA4d3QURCVcrR2VQmRt-QsTi5LVRqc/edit#gid=1128735360"
-        },
-        "columns": {
-          "mappingMode": "defineBelow",
-          "value": {
-            "TOKO": "={{ $('Analyze Image1').item.json.content.match(/TOKO: (.+)/)[1] }}",
-            "TOTAL": "={{ $('Analyze Image1').item.json.content.match(/TOTAL: (.+)/)[1] }}",
-            "ITEMS": "={{ $('Analyze Image1').item.json.content.match(/ITEMS: (.+)/)[1] }}",
-            "TANGGAL STRUK": "={{ $('Analyze Image1').item.json.content.match(/TANGGAL: (.+)/)[1] }}",
-            "TANGGAL INPUT": "={{ $now.format('yyyy-MM-dd') }}",
-            "WAKTU INPUT": "={{  $now.format('HH:mm:ss') }}"
-          },
-          "matchingColumns": [],
-          "schema": [
-            {
-              "id": "TOKO",
-              "displayName": "TOKO",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true
-            },
-            {
-              "id": "TOTAL",
-              "displayName": "TOTAL",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true
-            },
-            {
-              "id": "ITEMS",
-              "displayName": "ITEMS",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true
-            },
-            {
-              "id": "TANGGAL STRUK",
-              "displayName": "TANGGAL STRUK",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true
-            },
-            {
-              "id": "TANGGAL INPUT",
-              "displayName": "TANGGAL INPUT",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true
-            },
-            {
-              "id": "WAKTU INPUT",
-              "displayName": "WAKTU INPUT",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true
-            }
-          ],
-          "attemptToConvertTypes": false,
-          "convertFieldsToString": false
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.googleSheets",
-      "typeVersion": 4.7,
-      "position": [
-        352,
-        336
-      ],
-      "id": "1d3b3bca-edc3-42be-8c5f-76d412fce324",
-      "name": "Append row in sheet",
-      "credentials": {
-        "googleSheetsOAuth2Api": {
-          "id": "NQDqcN4IXTYOhWEw",
-          "name": "Pertemuan 1"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
-        "text": "=Struk tidak dapat dibaca dengan jelas.  Pastikan :  \n- Foto Struk jelas dan tidak blur  \n- Pencahayaan cukup  \n- Semua text terlihat silahkan coba foto ulang! )",
-        "additionalFields": {
-          "appendAttribution": false
-        }
-      },
-      "type": "n8n-nodes-base.telegram",
-      "typeVersion": 1.2,
-      "position": [
-        352,
-        128
-      ],
-      "id": "2162b54e-e64d-4df9-9282-feb694e487dd",
-      "name": "Send a text message1",
-      "webhookId": "222c5158-d948-4f9b-9287-5a112b12562b",
+      "id": "a45dd979-b557-42c5-be2b-dd1e271e6836",
+      "name": "Telegram Trigger",
+      "webhookId": "e4aecc4a-71d3-4a93-acd5-dfe8bd8faa94",
       "credentials": {
         "telegramApi": {
           "id": "Am554JJeP3qwKw8j",
@@ -263,7 +62,7 @@
                 },
                 "conditions": [
                   {
-                    "id": "ebd0acfd-1cd3-45e6-9120-2ac3f36731d6",
+                    "id": "18f41aed-de25-45a5-b09a-e2b0676a5bc3",
                     "leftValue": "={{ $json.message.text }}",
                     "rightValue": "/laporan",
                     "operator": {
@@ -285,12 +84,35 @@
                 },
                 "conditions": [
                   {
-                    "id": "fd0569ff-dafd-4b8e-bd47-66411ec63609",
+                    "id": "912cf41e-100e-403b-9e4a-e75236e9be15",
                     "leftValue": "={{ $json.message.text }}",
                     "rightValue": "",
                     "operator": {
                       "type": "string",
                       "operation": "exists",
+                      "singleValue": true
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "db59aa19-4ca9-45b6-8ed2-7afb70d3bea0",
+                    "leftValue": "={{ $json.message.photo[3] }}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "object",
+                      "operation": "empty",
                       "singleValue": true
                     }
                   }
@@ -305,129 +127,31 @@
       "type": "n8n-nodes-base.switch",
       "typeVersion": 3.2,
       "position": [
-        -624,
-        256
+        -1072,
+        384
       ],
-      "id": "2177527c-e602-4c0b-8bc8-88ee5fe99adf",
+      "id": "a5f5a42f-51c3-4e62-84e5-3567aeb0aa82",
       "name": "Switch"
     },
     {
       "parameters": {
-        "updates": [
-          "message"
-        ],
-        "additionalFields": {
-          "download": true
-        }
-      },
-      "type": "n8n-nodes-base.telegramTrigger",
-      "typeVersion": 1.2,
-      "position": [
-        -848,
-        272
-      ],
-      "id": "c4a0d83c-8627-41a1-ad86-3781938faca2",
-      "name": "Telegram Trigger1",
-      "webhookId": "e4aecc4a-71d3-4a93-acd5-dfe8bd8faa94",
-      "credentials": {
-        "telegramApi": {
-          "id": "Am554JJeP3qwKw8j",
-          "name": "Bundahara Bot"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "chatId": "={{ $('Telegram Trigger1').item.json.message.chat.id }}",
-        "text": "=✅ Data belanja berhasil disimpan   \n🏪 Toko: {{ $json.TOKO }}\n📅 Tanggal: {{ $json['TANGGAL STRUK'] }}\n📦 Items: {{ $json.ITEMS }}\n💰 Total: Rp {{ $json.TOTAL }}",
-        "additionalFields": {
-          "appendAttribution": false
-        }
+        "resource": "file",
+        "fileId": "={{ $json.message.photo[3].file_id }}",
+        "additionalFields": {}
       },
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        560,
-        336
+        -768,
+        128
       ],
-      "id": "2edbe75f-072b-49fc-8676-07d72d50232d",
-      "name": "Send a text message",
-      "webhookId": "d2bd99d2-e1cd-4f11-82d9-893694faccba",
+      "id": "3fb9b20b-4eed-429a-a79e-326ec74d8ee9",
+      "name": "Telegram",
+      "webhookId": "e6cfcf0d-b19c-458f-941b-9b9b682a8225",
       "credentials": {
         "telegramApi": {
           "id": "Am554JJeP3qwKw8j",
           "name": "Bundahara Bot"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "content": "## Node untuk file\n\nNodes ini digunakan untuk menganalisis gambar yang masuk dan dimasukan ke spreadsheet \n",
-        "height": 416,
-        "width": 1248
-      },
-      "type": "n8n-nodes-base.stickyNote",
-      "position": [
-        -432,
-        96
-      ],
-      "typeVersion": 1,
-      "id": "304c1f80-27a5-4d98-98ae-388817c3d28c",
-      "name": "Sticky Note"
-    },
-    {
-      "parameters": {
-        "content": "## Input data berupa text \n**Akan menerima data dari text",
-        "height": 352,
-        "width": 1248
-      },
-      "type": "n8n-nodes-base.stickyNote",
-      "position": [
-        -432,
-        528
-      ],
-      "typeVersion": 1,
-      "id": "f255fbcc-c94c-4b81-b074-d8786270c6cf",
-      "name": "Sticky Note1"
-    },
-    {
-      "parameters": {
-        "promptType": "define",
-        "text": "={{ $json.message.text }}",
-        "options": {
-          "systemMessage": "=Kamu adalah asisten keuangan yang mencatat belanjaan saya.\n\nTUGAS : Analisa text yang diinputkan ubah menjadi format yang ditentukan seperti berikut : \n\nTOKO : Nama toko dari text. jika tidak ada nama tokonya, berikan penjelasan \"masukan nama toko\"\nTOTAL : Total harga dibuat dalam mata uang rupiah (Rp/Ribu/rb/k)\nITEMS : Data barang atau produk yang dibeli.\nTANGGAL : {{ $now.format('dd-MM-yyyy') }}\n\nberlaku juga penulisan diffForHumans seperti \"kemarin, minggu lalu, dan bulan lalu\", jika ada input seperti ini hitung dari tanggal {{ $now }}\n\nCONTOH : \nTOKO : Toko Maju Jaya\nTOTAL : 30000\nITEMS : Gula Pasir 2 kg\nTANGGAL : 31 Oktober 2024\n\nINPUT : \"Saya kemarin beli susu cokelat di alfamart harganya 30rb\"\nTOKO : Manual Input\nTOTAL : 30000\nITEMS : Gula Pasir 2 kg\nTANGGAL : 31 Oktober 2024\n\nJika data tidak difahami, berikan output : \nERROR : Text tidak dapat fahami"
-        }
-      },
-      "type": "@n8n/n8n-nodes-langchain.agent",
-      "typeVersion": 2.2,
-      "position": [
-        -144,
-        592
-      ],
-      "id": "36b49291-118a-4a9a-a967-64b2d9a33487",
-      "name": "AI Agent"
-    },
-    {
-      "parameters": {
-        "model": {
-          "__rl": true,
-          "mode": "list",
-          "value": "gpt-4.1-mini"
-        },
-        "options": {}
-      },
-      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
-      "typeVersion": 1.2,
-      "position": [
-        -368,
-        752
-      ],
-      "id": "73a5fd8a-2cf1-4b87-bf86-a3e408749932",
-      "name": "OpenAI Chat Model",
-      "credentials": {
-        "openAiApi": {
-          "id": "1IXySknTEzNKrFKx",
-          "name": "OpenAi account"
         }
       }
     },
@@ -442,9 +166,127 @@
           },
           "conditions": [
             {
-              "id": "347e1392-222a-486f-abb1-c94d84cb6461",
+              "id": "bc117795-c081-482b-bf20-4427b1cf2889",
+              "leftValue": "ERROR:",
+              "rightValue": "=ERROR:",
+              "operator": {
+                "type": "string",
+                "operation": "exists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        32,
+        128
+      ],
+      "id": "f38594d7-08cf-4a4d-a0f9-4ba178fd5e38",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.from.id }}",
+        "text": "=✅ Data belanja berhasil disimpan   \n🏪 Toko:{{ $json.TOKO }} \n📅 Tanggal:{{ $json['TANGGAL STRUK'] }}  \n📦 Items:{{ $json.ITEMS }}  \n💰 Total: Rp {{ $json.TOTAL }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        464,
+        240
+      ],
+      "id": "0e082e74-8949-4915-aaa9-d5afe4d3a4f1",
+      "name": "Telegram1",
+      "webhookId": "533a2d71-ea64-42c7-9bba-627220e2e144",
+      "credentials": {
+        "telegramApi": {
+          "id": "Am554JJeP3qwKw8j",
+          "name": "Bundahara Bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "=Struk tidak dapat dibaca dengan jelas.  Pastikan :  \n- Foto Struk jelas dan tidak blur  \n- Pencahayaan cukup  \n- Semua text terlihat silahkan coba foto ulang! )\n\nCHAT INI UNTUK : {{ $('Telegram Trigger').item.json.message.from.first_name }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        272,
+        -32
+      ],
+      "id": "2b3b9c1e-aec5-47ac-8c0c-69a194748b8d",
+      "name": "Telegram2",
+      "webhookId": "810ac87d-c416-43b1-a63c-41695b0450cd",
+      "credentials": {
+        "telegramApi": {
+          "id": "Am554JJeP3qwKw8j",
+          "name": "Bundahara Bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.message.text }}",
+        "options": {
+          "systemMessage": "=Kamu adalah parser text belanja yang mengubah input text fleksibel menjadi format terstruktur.\n\nTUGAS: Analisa text belanja dan ubah menjadi format PERSIS seperti ini:\n\nTOKO: nama toko dari text, jika tidak ada tulis 'Manual Input'\nTOTAL: total harga dalam Rupiah Rp/ribu/rb\nITEMS: daftar barang yang dibeli dengan kuantitas\nTANGGAL: {{ $now.format('yyyy-MM-dd') }}\n\nCONTOH:\nInput: \"beli Telur 1kg Rp 20rb di Toko Mbak Ita\"\nOutput:\nTOKO: Toko Mbak Ita\nTOTAL: 20000\nITEMS: Telur 1kg\nTANGGAL: 2025-06-19\n\nInput: \"beli susu ultra 2 botol sama roti tawar 15 ribu\"\nOutput:\nTOKO: Manual Input\nTOTAL: 15000\nITEMS: Susu Ultra 2 botol, Roti Tawar\nTANGGAL: 2025-06-19\n\nJika tidak bisa dipahami, berikan:\nERROR: Text belanja tidak dapat dipahami\"\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2,
+      "position": [
+        -688,
+        816
+      ],
+      "id": "f3010f9f-f439-4445-b192-5c4a919169b7",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -736,
+        1008
+      ],
+      "id": "81b68c9c-94d2-41ba-9dbe-e27ac962fb9f",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "GXB9Oy0YDaTGpXpo",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "0ca2d115-e35b-438e-aaef-7fce78691110",
               "leftValue": "={{ $json.output }}",
-              "rightValue": "ERROR",
+              "rightValue": "ERROR:",
               "operator": {
                 "type": "string",
                 "operation": "contains"
@@ -458,16 +300,16 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        208,
-        592
+        -336,
+        816
       ],
-      "id": "2373c146-3548-4cf5-b3e3-b71e724d2d3b",
+      "id": "c1862aa0-4a66-44ee-be84-00b840f8e170",
       "name": "If1"
     },
     {
       "parameters": {
-        "chatId": "={{ $('Telegram Trigger1').item.json.message.chat.id }}",
-        "text": "=🙁 Yahh gagal, \nInput yang kamu masukan aku kurang paham :(",
+        "chatId": "={{ $('Telegram Trigger').item.json.message.from.id }}",
+        "text": "❌ Tidak dapat membuat input belanja \n\nContoh Format yang benar: \n-\"beli telur 1kg Rp 20rb di Toko Mbak Har\" \n-\"beli susu ultra 2 botol sama roti tawar 15 ribu\" \n-\"belanja di alfamart beli mie indomie 5 bungkus 12000\" \n-\"jajan bakso 2 porsi 20 ribu\"\n\n💡 Tips: \n- Sebutkan barang yang dibeli \n- Sertakan harga (opsional) \n- Sebutkan nama toko (opsional)",
         "additionalFields": {
           "appendAttribution": false
         }
@@ -475,12 +317,12 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        560,
-        560
+        -112,
+        704
       ],
-      "id": "77794a4f-0f26-47d5-bcf4-807c0aea8a16",
-      "name": "Send a text message2",
-      "webhookId": "fdfbf113-db54-4295-96e5-2146e23f8095",
+      "id": "c59d9b9f-2205-44a3-afa7-e0178cb3b14b",
+      "name": "Telegram3",
+      "webhookId": "e69415aa-baae-438f-a00d-f8d3241f0a53",
       "credentials": {
         "telegramApi": {
           "id": "Am554JJeP3qwKw8j",
@@ -490,30 +332,145 @@
     },
     {
       "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.from.id }}",
+        "text": "=✅ *Data belanja berhasil disimpan*\n🏪 *Toko:*{{ $json.TOKO }}\n📅 *Tanggal:*{{ $json['TANGGAL INPUT'] }}\n📦 *Items:*{{ $json.ITEMS }}\n💰 *Total:Rp. *{{ $json.TOTAL }}\n*Waktu Belanjanya kapan: *{{ $json['TANGGAL STRUK'] }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        112,
+        864
+      ],
+      "id": "bf881393-d3a8-49f0-8aea-6ddb3e617dfb",
+      "name": "Telegram5",
+      "webhookId": "47f51bcf-a4c5-4ace-9aac-97a214f4886d",
+      "credentials": {
+        "telegramApi": {
+          "id": "Am554JJeP3qwKw8j",
+          "name": "Bundahara Bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.message.text }}",
+        "options": {
+          "systemMessage": "=PENTING: Hanya berikan response dalam format di atas!\nPrompt Lihat Laporan\n\nKamu adalah asisten laporan keuangan untuk user Fauzi.\n\nINFORMASI WAKTU:\n- Waktu sekarang: {{ $now.format('yyyy-MM-dd') }}\n- Tanggal hari ini: {{ $today.format('yyyy-MM-dd') }}\n\nTUGAS:\n1. Analisa permintaan user untuk laporan pengeluaran\n2. Gunakan tool \"catatan_keuangan\" untuk ambil data catatan pengeluaran\n3. Filter data sesuai periode yang diminta:\n   - \"hari ini\" → data tanggal hari ini\n   - \"minggu ini\" → data tanggal 1 minggu terakhir\n   - \"bulan ini\" → data dalam bulan ini\n4. Hitung total pengeluaran dan jumlah transaksi\n5. Format laporan yang rapi dalam bahasa Indonesia\n\nSTRUKTUR DATA SHEETS:\n- Kolom A: Toko\n- Kolom B: Total (dalam rupiah)\n- Kolom C: Items \n- Kolom D: Tanggal Struk\n- Kolom E: Tanggal Input\n- Kolom F: Waktu Input\n\nBuatkan Format Yang Rapih dengan Emoji\n\n--\n\nPENTING: \n- Urutkan transaksi berdasarkan tanggal (terbaru ke terlama)\n- Gunakan format mata uang Indonesia (Rp 43.500)\n- Setiap detail transaksi dipisah dengan garis \"--\"\n- Gunakan emoji sesuai format di atas\n\nJika tidak ada data untuk periode tersebut, beri pesan ramah bahwa belum ada transaksi."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2,
+      "position": [
+        -544,
+        384
+      ],
+      "id": "7d4ec776-fe4f-4964-b852-ebc59b84e156",
+      "name": "AI Agent1"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -608,
+        592
+      ],
+      "id": "facdb1bf-d0cb-4995-8b16-7e7c3da4fa19",
+      "name": "Google Gemini Chat Model1",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "GXB9Oy0YDaTGpXpo",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "={{ $json.output }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -192,
+        384
+      ],
+      "id": "41662a3d-8970-4aa8-a7d9-cc8c3ece6815",
+      "name": "Telegram6",
+      "webhookId": "d78e152e-8d78-479d-b478-19664eb565ca",
+      "credentials": {
+        "telegramApi": {
+          "id": "Am554JJeP3qwKw8j",
+          "name": "Bundahara Bot"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "image",
+        "operation": "analyze",
+        "modelId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4o-mini",
+          "cachedResultName": "GPT-4O-MINI"
+        },
+        "text": "=Analisa struk belanja pada gambar ini dan berikan informasi dalam format yang PERSIS seperti ini:\\n\\nTOKO: [nama toko dari struk]\\nTOTAL: [total pembayaran dalam angka saja tanpa Rp]\\nITEMS: [daftar barang yang dibeli, pisahkan dengan koma]\\nTANGGAL: [tanggal transaksi jika terlihat, atau tidak terlihat]\\n\\nContoh response yang benar:\\nTOKO: Alfamart\\nTOTAL: 25500\\nITEMS: Susu Ultra 1L, Roti Tawar, Sabun Lifebuoy\\nTANGGAL: 2025-06-19\\n\\nJika struk tidak jelas atau tidak bisa dibaca, berikan:\\nERROR: Struk tidak dapat dibaca dengan jelas\\n\\nPENTING: Hanya berikan response dalam format di atas!",
+        "inputType": "base64",
+        "options": {
+          "detail": "auto"
+        }
+      },
+      "id": "340dfa54-9ea9-48da-b074-b148f8a6221d",
+      "name": "Analyze Image1",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "position": [
+        -368,
+        128
+      ],
+      "typeVersion": 1.8,
+      "credentials": {
+        "openAiApi": {
+          "id": "1IXySknTEzNKrFKx",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
         "operation": "append",
         "documentId": {
           "__rl": true,
-          "value": "1LwrsYqMg7BagvTA4d3QURCVcrR2VQmRt-QsTi5LVRqc",
+          "value": "1xd9HoBdqfBDzBlXXv9MoFQB8em0ZY4xfoyOSEIMIBSU",
           "mode": "list",
-          "cachedResultName": "Materi 1",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1LwrsYqMg7BagvTA4d3QURCVcrR2VQmRt-QsTi5LVRqc/edit?usp=drivesdk"
+          "cachedResultName": "Laporan Pengeluaran Belanja Bulanan - 25 September 2025 s/d 24 Oktober 2025",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1xd9HoBdqfBDzBlXXv9MoFQB8em0ZY4xfoyOSEIMIBSU/edit?usp=drivesdk"
         },
         "sheetName": {
           "__rl": true,
-          "value": 1128735360,
+          "value": "gid=0",
           "mode": "list",
-          "cachedResultName": "Catatan Belanja",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1LwrsYqMg7BagvTA4d3QURCVcrR2VQmRt-QsTi5LVRqc/edit#gid=1128735360"
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1xd9HoBdqfBDzBlXXv9MoFQB8em0ZY4xfoyOSEIMIBSU/edit#gid=0"
         },
         "columns": {
           "mappingMode": "defineBelow",
           "value": {
-            "TOKO": "={{ $json.output.match(/TOKO :(.+)/)[1]}}",
-            "TOTAL": "={{ $json.output.match(/TOTAL :(.+)/)[1]}}",
-            "ITEMS": "={{ $json.output.match(/ITEMS :(.+)/)[1]}}",
-            "TANGGAL STRUK": "={{ $json.output.match(/TANGGAL :(.+)/)[1]}}",
+            "TOKO": "={{ $('Analyze Image1').item.json.content.match(/TOKO: (.+)/)[1] }}",
+            "TOTAL": "={{ $('Analyze Image1').item.json.content.match(/TOTAL: (.+)/)[1] }}",
+            "ITEMS": "={{ $('Analyze Image1').item.json.content.match(/ITEMS: (.+)/)[1] }}",
+            "TANGGAL STRUK": "={{ $('Analyze Image1').item.json.content.match(/TANGGAL: (.+)/)[1] }}",
             "TANGGAL INPUT": "={{ $now.format('yyyy-MM-dd') }}",
-            "WAKTU INPUT": "={{  $now.format('HH:mm:ss') }}"
+            "WAKTU INPUT": "={{ $now.format('HH:mm:ss') }}"
           },
           "matchingColumns": [],
           "schema": [
@@ -578,88 +535,17 @@
         "options": {}
       },
       "type": "n8n-nodes-base.googleSheets",
-      "typeVersion": 4.7,
+      "typeVersion": 4.6,
       "position": [
-        416,
-        736
+        256,
+        240
       ],
-      "id": "e78e49e9-2d0e-4754-ae3a-039d8aaabc3b",
-      "name": "Append row in sheet1",
+      "id": "bd4c43a3-7aad-46ae-ba81-2ea121ec6cf6",
+      "name": "Append row in sheet",
       "credentials": {
         "googleSheetsOAuth2Api": {
           "id": "NQDqcN4IXTYOhWEw",
           "name": "Pertemuan 1"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "chatId": "={{ $('Telegram Trigger1').item.json.message.chat.id }}",
-        "text": "=🤩 Yeayyy, Data berhasil dibuat. Ini data yang kamu inputkan :\nNama Toko : {{ $json.TOKO }}\nNama Barang : {{ $json.ITEMS }}\n",
-        "additionalFields": {}
-      },
-      "type": "n8n-nodes-base.telegram",
-      "typeVersion": 1.2,
-      "position": [
-        624,
-        736
-      ],
-      "id": "09b33a38-cd7b-4095-8067-45264dd501ec",
-      "name": "Send a text message3",
-      "webhookId": "2fc48830-3652-4459-889d-d8e0df53e01a",
-      "credentials": {
-        "telegramApi": {
-          "id": "Am554JJeP3qwKw8j",
-          "name": "Bundahara Bot"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "content": "## Meminta data laporan \n**Akan mengambil data dari google sheet untuk ditampilkan di telegram",
-        "height": 496,
-        "width": 1248
-      },
-      "type": "n8n-nodes-base.stickyNote",
-      "position": [
-        -432,
-        912
-      ],
-      "typeVersion": 1,
-      "id": "9a2f305f-00aa-406d-8bd2-404d9b1c2a2e",
-      "name": "Sticky Note2"
-    },
-    {
-      "parameters": {
-        "promptType": "define",
-        "text": "=Tugas kamu adalah\nPENTING : Ambil data dari Google sheet yang ada pada tools (Materi 1) dan sheet nya adalah catatan belanja.\n\nKamu adalah asisten saya\nTugas : \n1. Analisa permintaan dari prompt tentang pengeluaran\n2. Filter data dari : \n    - hari ini -> sesuaikan dengan {{ $now }}\n    - kemarin -> sesuaikan dengan {{ $now }}\n    - minggu lalu -> sesuaikan dengan {{ $now }}\n3. Hitung jumlah pengeluarannya\n4. Format laporan menggunakan bahasa indonesia\n\nSTRUKTUR DATA\n- KOLOM A : Toko\n- KOLOM B : Total dalam rupiah\n- KOLOM C : Items\n- KOLOM D : Tanggal Input\n- KOLOM E : Waktu Input\n\nBuatkan datanya dengan sangat rapih, tambahkan emoji yang sesuai dengan kolom.\n\nPENTING : \n- Urutkan berdasarkan data terbaru\n- Gunakan format penulisan rupiah (Rp. 17.000)\n- Pisahkan data item dengan \"----------------\"\n- Emojinya sesuaikan berdasarkan data item diatas\n\nJika tidak ada transaksi pada tanggal tersebut, keluarkan output tidak ada transaksi pada tanggal tersebut dengan ramah.",
-        "options": {}
-      },
-      "type": "@n8n/n8n-nodes-langchain.agent",
-      "typeVersion": 2.2,
-      "position": [
-        -288,
-        1040
-      ],
-      "id": "e1b81bee-20ed-4483-a474-fad7f5166e2d",
-      "name": "AI Agent1"
-    },
-    {
-      "parameters": {
-        "options": {}
-      },
-      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
-      "typeVersion": 1,
-      "position": [
-        -384,
-        1248
-      ],
-      "id": "98227286-7f88-4b1a-aa28-16291fc10546",
-      "name": "Google Gemini Chat Model",
-      "credentials": {
-        "googlePalmApi": {
-          "id": "GXB9Oy0YDaTGpXpo",
-          "name": "Google Gemini(PaLM) Api account"
         }
       }
     },
@@ -682,12 +568,12 @@
         "options": {}
       },
       "type": "n8n-nodes-base.googleSheetsTool",
-      "typeVersion": 4.7,
+      "typeVersion": 4.6,
       "position": [
-        -144,
-        1248
+        -384,
+        608
       ],
-      "id": "33ce81b9-9981-4aec-b4fe-430571106329",
+      "id": "7a89bf28-47d4-4964-b07e-f570edf23c74",
       "name": "Get row(s) in sheet in Google Sheets",
       "credentials": {
         "googleSheetsOAuth2Api": {
@@ -698,19 +584,125 @@
     },
     {
       "parameters": {
-        "chatId": "={{ $('Telegram Trigger1').item.json.message.chat.id }}",
-        "text": "={{ $json.output }}",
-        "additionalFields": {}
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1LwrsYqMg7BagvTA4d3QURCVcrR2VQmRt-QsTi5LVRqc",
+          "mode": "list",
+          "cachedResultName": "Materi 1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1LwrsYqMg7BagvTA4d3QURCVcrR2VQmRt-QsTi5LVRqc/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1128735360,
+          "mode": "list",
+          "cachedResultName": "Catatan Belanja",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1LwrsYqMg7BagvTA4d3QURCVcrR2VQmRt-QsTi5LVRqc/edit#gid=1128735360"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "TOKO": "={{ $json.output.match(/TOKO:(.+)/)[1]}}",
+            "TOTAL": "={{ $json.output.match(/TOTAL:(.+)/)[1]}}",
+            "ITEMS": "={{ $json.output.match(/ITEMS:(.+)/)[1]}}",
+            "TANGGAL STRUK": "={{ $json.output.match(/TANGGAL:(.+)/)[1]}}",
+            "TANGGAL INPUT": "={{ $now.format('yyyy-MM-dd') }}",
+            "WAKTU INPUT": "={{ $now.format('HH:mm:ss') }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "TOKO",
+              "displayName": "TOKO",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "TOTAL",
+              "displayName": "TOTAL",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "ITEMS",
+              "displayName": "ITEMS",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "TANGGAL STRUK",
+              "displayName": "TANGGAL STRUK",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "TANGGAL INPUT",
+              "displayName": "TANGGAL INPUT",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "WAKTU INPUT",
+              "displayName": "WAKTU INPUT",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        -112,
+        912
+      ],
+      "id": "0e674d87-d0b6-4b9a-9c73-6f5ad9e922a1",
+      "name": "Append row in sheet1",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "NQDqcN4IXTYOhWEw",
+          "name": "Pertemuan 1"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $json.message.chat.id }}",
+        "text": "GAMBAR GAJELAS, BELI IPHONE GIH",
+        "additionalFields": {
+          "appendAttribution": false
+        }
       },
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
       "position": [
-        64,
-        1040
+        -992,
+        736
       ],
-      "id": "2b5859e8-23d7-414c-b33b-073b16662180",
-      "name": "Send a text message4",
-      "webhookId": "823b7345-053f-461a-a0c9-d1842164003f",
+      "id": "75caeda1-2a95-4f9e-bc70-88e55991c8af",
+      "name": "Send a text message",
+      "webhookId": "be961e32-0e1c-49eb-a8fd-9bd5e0fea1d8",
       "credentials": {
         "telegramApi": {
           "id": "Am554JJeP3qwKw8j",
@@ -720,51 +712,11 @@
     }
   ],
   "connections": {
-    "Get a file": {
+    "Telegram Trigger": {
       "main": [
         [
           {
-            "node": "Analyze Image1",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Analyze Image1": {
-      "main": [
-        [
-          {
-            "node": "If",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "If": {
-      "main": [
-        [
-          {
-            "node": "Send a text message1",
-            "type": "main",
-            "index": 0
-          }
-        ],
-        [
-          {
-            "node": "Append row in sheet",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Append row in sheet": {
-      "main": [
-        [
-          {
-            "node": "Send a text message",
+            "node": "Switch",
             "type": "main",
             "index": 0
           }
@@ -775,7 +727,7 @@
       "main": [
         [
           {
-            "node": "Get a file",
+            "node": "Telegram",
             "type": "main",
             "index": 0
           }
@@ -793,18 +745,48 @@
             "type": "main",
             "index": 0
           }
-        ]
-      ]
-    },
-    "Telegram Trigger1": {
-      "main": [
+        ],
         [
           {
-            "node": "Switch",
+            "node": "Send a text message",
             "type": "main",
             "index": 0
           }
         ]
+      ]
+    },
+    "Telegram": {
+      "main": [
+        [
+          {
+            "node": "Analyze Image1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Telegram2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram2": {
+      "main": [
+        []
       ]
     },
     "AI Agent": {
@@ -818,7 +800,7 @@
         ]
       ]
     },
-    "OpenAI Chat Model": {
+    "Google Gemini Chat Model": {
       "ai_languageModel": [
         [
           {
@@ -833,7 +815,7 @@
       "main": [
         [
           {
-            "node": "Send a text message2",
+            "node": "Telegram3",
             "type": "main",
             "index": 0
           }
@@ -847,34 +829,50 @@
         ]
       ]
     },
-    "Append row in sheet1": {
-      "main": [
-        [
-          {
-            "node": "Send a text message3",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "AI Agent1": {
       "main": [
         [
           {
-            "node": "Send a text message4",
+            "node": "Telegram6",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Google Gemini Chat Model": {
+    "Google Gemini Chat Model1": {
       "ai_languageModel": [
         [
           {
             "node": "AI Agent1",
             "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram6": {
+      "main": [
+        []
+      ]
+    },
+    "Analyze Image1": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append row in sheet": {
+      "main": [
+        [
+          {
+            "node": "Telegram1",
+            "type": "main",
             "index": 0
           }
         ]
@@ -886,6 +884,17 @@
           {
             "node": "AI Agent1",
             "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append row in sheet1": {
+      "main": [
+        [
+          {
+            "node": "Telegram5",
+            "type": "main",
             "index": 0
           }
         ]
